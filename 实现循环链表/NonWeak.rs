@@ -24,23 +24,21 @@ impl Drop for Node {
 // 返回一个循环n次引用的智能指针
 // 数字从 1 - n
 // 1 -> 2 -> 3 -> 4 -> ... -> n -> 1
-unsafe fn generate_n_loop_pointer(n: usize) -> Node {
+fn generate_n_loop_pointer(n: usize) -> Node {
     let mut head = Node{id: 0,next: None};
     let mut ptr = Rc::new(RefCell::new(Node{id: n as i32,next:None}));
     head.next = Some(Rc::clone(&ptr));
     for i in (1..n).rev() {
         let mut new_node = Rc::new(RefCell::new(Node{id: i as i32,next: None}));
         let mut old_node = mem::replace(&mut ptr,new_node);
-        (*ptr.as_ptr()).next = Some(old_node);
+        ptr.clone().borrow_mut().next = Some(old_node);
     }
     if let Some(h) = &mut head.next {
-        (*h.as_ptr()).next = Some(ptr);
+        h.clone().borrow_mut().next = Some(ptr);
     }
     head
 }
 
 fn main() {
-    unsafe {
-        let mut list = generate_n_loop_pointer(10);
-    }
+    let mut list = generate_n_loop_pointer(10);
 }
