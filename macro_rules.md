@@ -1,16 +1,16 @@
 ```rust
 macro_rules! myprint {
     ($x: expr) => {
-        println!("{}", $x)
+        println!("{}", $x);
     };
-    ($x: expr, $($y: expr),+) => {
-        if $x % 2 == 1 {
-            println!("{}", $x);
-            myprint!($($y),+);
-        }else {
-            myprint!($($y),+);
-            println!("{}", $x);
-        }
+    ($x: expr, $y: expr) => {
+        println!("{}", $x);
+        println!("{}", $y);
+    };
+    ($x: expr, $y:expr, $($z: expr),+) => {
+        println!("{}", $x);
+        myprint!($($z),+);
+        println!("{}", $y);
     };
 }
 
